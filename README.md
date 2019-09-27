@@ -12,16 +12,10 @@ Run Azure DevOps Agent with a random port:
 docker run -d -P --name vstsagent -e AZP_URL=https://<your_company>.visualstudio.com -e AZP_TOKEN=<your_token> -e AZP_AGENT_NAME=dockeragent -e AZP_POOL="Docker Linux Agent" --name agentvsts imjoseangel/vstsagent
 ```
 
-or map to exposed port 443:
+or map to exposed port 8080:
 
 ```shell
 docker run -d --name vstsagent -e AZP_URL=https://<your_company>.visualstudio.com -e AZP_TOKEN=<your_token> -e AZP_AGENT_NAME=dockeragent -e AZP_POOL="Docker Linux Agent" -p 8080:8080 --name agentvsts imjoseangel/vstsagent
-```
-
-To include certificate and license on container creation:
-
-```shell
-docker run -t -d -v ~/certs:/certs -p 443:443 -e SERVER_NAME=localhost  ansible-tower
 ```
 
 Allocating a pseudo-TTY is not strictly necessary, but it gives us pretty color-coded logs that we can look at with `docker logs`:
