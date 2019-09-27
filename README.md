@@ -1,4 +1,4 @@
-[![Get your own image badge on microbadger.com](https://images.microbadger.com/badges/image/imjoseangel/docker-vstsagent.svg)](https://microbadger.com/images/imjoseangel/docker-vstsagent "Get your own image badge on microbadger.com")
+[![Get your own image badge on microbadger.com](https://images.microbadger.com/badges/image/imjoseangel/vstsagent.svg)](https://microbadger.com/images/imjoseangel/vstsagent "Get your own image badge on microbadger.com")
 
 ## Azure DevOps Agent on Docker
 
