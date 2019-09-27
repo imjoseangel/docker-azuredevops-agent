@@ -23,7 +23,7 @@ Allocating a pseudo-TTY is not strictly necessary, but it gives us pretty color-
 
 ### K8S Heath Check
 
-**URL:** `https://localhost/health`
+**URL:** `https://localhost:8080/health`
 
 ### License
 
