@@ -39,22 +39,15 @@ RUN pip3 install --upgrade \
     setuptools \
     pip
 
-RUN pip3 install \
-    aiohttp \
-    ansible \
-    ansible[azure] \
-    azure-datalake-store \
-    python-memcached \
-    psutil \
-    jsonschema \
-    GitPython
+ADD requirements.txt /requirements.txt
+RUN pip3 install --upgrade -r /requirements.txt
 
 WORKDIR /azp
 
-COPY ./start.sh .
-COPY ./web.py /
-RUN chmod +x start.sh
+ADD start.sh /start.sh
+ADD web.py /web.py
+RUN chmod +x /start.sh
 
 EXPOSE 8080
 
-CMD ["./start.sh"]
+ENTRYPOINT ["/start.sh"]
