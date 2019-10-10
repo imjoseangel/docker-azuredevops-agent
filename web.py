@@ -24,21 +24,16 @@ def checkIfProcessRunning(processName):
     return False
 
 
-async def root(request):
-    return web.Response(text=str('VSTS Agent'))
-
-
-async def health(request):
-    process = checkIfProcessRunning('Agent.Listener')
+async def livenessProbe(request):
+    process = checkIfProcessRunning('launchdd')
     if not process:
-        return web.Response(text="FAIL")
-    return web.Response(text="OK")
+        raise web.HTTPInternalServerError()
+    return web.Response(text="i'm alive!")
 
 
 def main():
     app = web.Application()
-    app.add_routes([web.get("/", root)])
-    app.add_routes([web.get("/health", health)])
+    app.add_routes([web.get("/healthz", livenessProbe)])
 
     # disable SIGTERM handling for disruption-free rolling updates
     web.run_app(app, handle_signals=False)
