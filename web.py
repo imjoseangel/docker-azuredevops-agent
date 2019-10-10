@@ -25,7 +25,7 @@ def checkIfProcessRunning(processName):
 
 
 async def livenessProbe(request):
-    process = checkIfProcessRunning('launchdd')
+    process = checkIfProcessRunning('Agent.Listener')
     if not process:
         raise web.HTTPInternalServerError()
     return web.Response(text="i'm alive!")
