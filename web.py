@@ -28,7 +28,8 @@ async def livenessProbe(request):
     process = checkIfProcessRunning('Agent.Listener')
     if not process:
         raise web.HTTPInternalServerError()
-    return web.Response(text="i'm alive!")
+    return web.Response(text="i'm alive!",
+                        headers={"Custom-Header": "Awesome"})
 
 
 def main():
