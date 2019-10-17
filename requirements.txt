@@ -1,8 +1,10 @@
 aiohttp
 ansible
 ansible[azure]
+az
 azure-datalake-store
 GitPython
 jsonschema
 psutil
 python-memcached
+setuptools
