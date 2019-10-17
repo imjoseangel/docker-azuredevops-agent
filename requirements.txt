@@ -7,4 +7,3 @@ GitPython
 jsonschema
 psutil
 python-memcached
-setuptools
