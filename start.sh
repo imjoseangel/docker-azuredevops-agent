@@ -88,10 +88,7 @@ print_header "3. Configuring Azure Pipelines agent..."
 # print_header "4. Running K8S web service..."
 # nohup python3 /web.py &
 
-print_header "4. Set Python path..."
-export PYTHONPATH="/usr/bin/python"
-
-print_header "5. Running Azure Pipelines agent..."
+print_header "4. Running Azure Pipelines agent..."
 
 # `exec` the node runtime so it's aware of TERM and INT signals
 # AgentService.js understands how to handle agent self-update and restart
