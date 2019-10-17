@@ -44,12 +44,14 @@ RUN pip3 install --upgrade -r /requirements.txt
 
 RUN ln -s /usr/bin/python3 /usr/bin/python
 
+RUN curl -sL https://aka.ms/InstallAzureCLIDeb | bash
+
 WORKDIR /azp
 
 ADD start.sh /start.sh
-ADD web.py /web.py
+# ADD web.py /web.py
 RUN chmod +x /start.sh
 
-EXPOSE 8080
+# EXPOSE 8080
 
 ENTRYPOINT ["/start.sh"]
