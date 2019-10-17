@@ -85,8 +85,11 @@ print_header "3. Configuring Azure Pipelines agent..."
   --replace \
   --acceptTeeEula & wait $!
 
-print_header "4. Running K8S web service..."
-nohup python3 /web.py &
+# print_header "4. Running K8S web service..."
+# nohup python3 /web.py &
+
+print_header "4. Set Python path..."
+export PYTHONPATH="/usr/bin/python"
 
 print_header "5. Running Azure Pipelines agent..."
 
