@@ -42,6 +42,8 @@ RUN pip3 install --upgrade \
 ADD requirements.txt /requirements.txt
 RUN pip3 install --upgrade -r /requirements.txt
 
+RUN ln -s /usr/bin/python3 /usr/bin/python
+
 WORKDIR /azp
 
 ADD start.sh /start.sh
