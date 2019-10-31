@@ -4,7 +4,8 @@ LABEL maintainer="@imjoseangel"
 
 # To make it easier for build and release pipelines to run apt-get,
 # configure apt to not require confirmation (assume the -y argument by default)
-ENV DEBIAN_FRONTEND=noninteractive
+ENV DEBIAN_FRONTEND noninteractive
+ENV DOCKER_VERSION 19.03.4
 RUN echo "APT::Get::Assume-Yes \"true\";" > /etc/apt/apt.conf.d/90assumeyes
 
 RUN apt-get update \
@@ -47,6 +48,12 @@ RUN ln -s /usr/bin/python3 /usr/bin/python
 RUN curl -sL https://aka.ms/InstallAzureCLIDeb | bash
 
 WORKDIR /azp
+
+RUN curl -sSL https://download.docker.com/linux/static/stable/x86_64/docker-${DOCKER_VERSION}.tgz -o docker-${DOCKER_VERSION}.tgz \
+    && tar xvf docker-${DOCKER_VERSION}.tgz \
+    && rm -f docker-${DOCKER_VERSION}.tgz
+
+RUN ln -sf /azp/docker/docker /usr/local/bin/docker
 
 ADD start.sh /start.sh
 # ADD web.py /web.py
