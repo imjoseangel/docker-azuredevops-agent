@@ -29,6 +29,4 @@ Maintained by [@imjoseangel](http://github.com/imjoseangel)
 
 ## License
 
-Licensed under [the MIT License][1].
-
-[1]: https://github.com/imjoseangel/docker-vstsagent/blob/devel/LICENSE
+Licensed under [The MIT License](LICENSE)
