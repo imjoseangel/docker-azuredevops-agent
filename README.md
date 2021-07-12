@@ -31,4 +31,4 @@ Maintained by [@imjoseangel](http://github.com/imjoseangel)
 
 Licensed under [the MIT License][1].
 
-[1]: https://github.com/imjoseangel/powerline-k8sstatus/blob/devel/LICENSE
+[1]: https://github.com/imjoseangel/docker-vstsagent/blob/devel/LICENSE
