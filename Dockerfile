@@ -10,6 +10,7 @@ RUN echo "APT::Get::Assume-Yes \"true\";" > /etc/apt/apt.conf.d/90assumeyes
 RUN apt-get update \
     && apt-get install -y --no-install-recommends \
     apt-utils \
+    apt-transport-https \
     software-properties-common \
     build-essential \
     libssl-dev \
@@ -36,6 +37,13 @@ RUN apt-get update \
 
 RUN curl http://ftp.debian.org/debian/pool/main/i/icu/libicu63_63.2-3_amd64.deb \
     --output libicu63_63.2-3_amd64.deb && dpkg -i libicu63_63.2-3_amd64.deb
+
+RUN curl -s https://packages.cloud.google.com/apt/doc/apt-key.gpg | sudo apt-key add && \
+    apt-add-repository "deb http://apt.kubernetes.io/ kubernetes-xenial main"
+
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends \
+    kubeadm kubelet kubectl kubernetes-cni
 
 RUN pip3 install --upgrade \
     setuptools \
