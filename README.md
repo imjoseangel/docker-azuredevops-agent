@@ -23,6 +23,12 @@ Allocating a pseudo-TTY is not strictly necessary, but it gives us pretty color-
 
 **URL:** `https://localhost:8080/health`
 
-### License
+## Maintaners
 
-Copyright © 2019 [imjoseangel](http://imjoseangel.github.com). Licensed under [the MIT license](https://github.com/imjoseangel/docker-tower/blob/master/LICENSE).
+Maintained by [@imjoseangel](http://github.com/imjoseangel)
+
+## License
+
+Licensed under [the MIT License][1].
+
+[1]: https://github.com/imjoseangel/powerline-k8sstatus/blob/devel/LICENSE
