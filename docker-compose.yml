@@ -5,10 +5,6 @@ services:
     tty: true
     stdin_open: false
     image: "imjoseangel/vstsagent"
-    ports:
-      - "8080:8080"
-    volumes:
-      - /var/run/docker.sock:/var/run/docker.sock
     environment:
       - AZP_URL=https://<mycompany>.visualstudio.com
       - AZP_TOKEN=<mypersonaltoken>
