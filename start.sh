@@ -13,7 +13,7 @@ if [ -z "$AZP_TOKEN_FILE" ]; then
   fi
 
   AZP_TOKEN_FILE=/azp/.token
-  echo -n $AZP_TOKEN > "$AZP_TOKEN_FILE"
+  echo -n "$AZP_TOKEN" > "$AZP_TOKEN_FILE"
 fi
 
 unset AZP_TOKEN
@@ -59,14 +59,14 @@ if echo "$AZP_AGENT_RESPONSE" | jq . >/dev/null 2>&1; then
     | jq -r '.value | map([.version.major,.version.minor,.version.patch,.downloadUrl]) | sort | .[length-1] | .[3]')
 fi
 
-if [ -z "$AZP_AGENTPACKAGE_URL" -o "$AZP_AGENTPACKAGE_URL" == "null" ]; then
+if [ -z "$AZP_AGENTPACKAGE_URL" ] || [ "$AZP_AGENTPACKAGE_URL" == "null" ]; then
   echo 1>&2 "error: could not determine a matching Azure Pipelines agent - check that account '$AZP_URL' is correct and the token is valid for that account"
   exit 1
 fi
 
 print_header "2. Downloading and installing Azure Pipelines agent..."
 
-curl -LsS $AZP_AGENTPACKAGE_URL | tar -xz & wait $!
+curl -LsS "$AZP_AGENTPACKAGE_URL" | tar -xz & wait $!
 
 source ./env.sh
 
@@ -84,9 +84,6 @@ print_header "3. Configuring Azure Pipelines agent..."
   --work "${AZP_WORK:-_work}" \
   --replace \
   --acceptTeeEula & wait $!
-
-# print_header "4. Running K8S web service..."
-# nohup python3 /web.py &
 
 print_header "4. Running Azure Pipelines agent..."
 
