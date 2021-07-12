@@ -29,6 +29,7 @@ RUN apt-get update \
     libssl1.1 \
     libunwind8 \
     curl \
+    gnupg2 \
     netcat \
     python3 \
     python3-dev \
@@ -38,8 +39,8 @@ RUN apt-get update \
 RUN curl http://ftp.debian.org/debian/pool/main/i/icu/libicu63_63.2-3_amd64.deb \
     --output libicu63_63.2-3_amd64.deb && dpkg -i libicu63_63.2-3_amd64.deb
 
-RUN curl -s https://packages.cloud.google.com/apt/doc/apt-key.gpg | apt-key add && \
-    apt-add-repository "deb http://apt.kubernetes.io/ kubernetes-xenial main"
+RUN curl -s https://packages.cloud.google.com/apt/doc/apt-key.gpg | apt-key add - && \
+    apt-add-repository "deb https://apt.kubernetes.io/ kubernetes-xenial main"
 
 RUN apt-get update \
     && apt-get install -y --no-install-recommends \
