@@ -38,7 +38,7 @@ RUN apt-get update \
 RUN curl http://ftp.debian.org/debian/pool/main/i/icu/libicu63_63.2-3_amd64.deb \
     --output libicu63_63.2-3_amd64.deb && dpkg -i libicu63_63.2-3_amd64.deb
 
-RUN curl -s https://packages.cloud.google.com/apt/doc/apt-key.gpg | sudo apt-key add && \
+RUN curl -s https://packages.cloud.google.com/apt/doc/apt-key.gpg | apt-key add && \
     apt-add-repository "deb http://apt.kubernetes.io/ kubernetes-xenial main"
 
 RUN apt-get update \
