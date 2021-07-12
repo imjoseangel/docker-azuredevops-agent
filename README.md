@@ -1,5 +1,3 @@
-[![Get your own image badge on microbadger.com](https://images.microbadger.com/badges/image/imjoseangel/vstsagent.svg)](https://microbadger.com/images/imjoseangel/vstsagent "Get your own image badge on microbadger.com")
-
 ## Azure DevOps Agent on Docker
 
 A Docker Azure VSTS (DevOps) image.
