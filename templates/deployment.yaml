@@ -1,64 +1,116 @@
 ---
 apiVersion: v1
+kind: Namespace
+metadata:
+  labels:
+    kubernetes.io/metadata.name: azuredevops
+  name: azuredevops
+spec:
+  finalizers:
+  - kubernetes
+
+---
+apiVersion: v1
 kind: Secret
 metadata:
   name: azuredevops
+  namespace: azuredevops
 type: Opaque
 data:
   AZP_TOKEN: base64==
+
 ---
 apiVersion: v1
 kind: ConfigMap
 metadata:
   name: azuredevops
+  namespace: azuredevops
 data:
   AZP_URL: https://mycompany.visualstudio.com
   AZP_POOL: "Docker Linux Agent"
+
 ---
 apiVersion: apps/v1
-kind: Deployment
+kind: StatefulSet
 metadata:
   name: azuredevops
   namespace: azuredevops
   labels:
     app: azuredevops
 spec:
+  serviceName: azuredevops
+  replicas: 3
   selector:
     matchLabels:
       app: azuredevops
-  strategy:
-    type: Recreate
   template:
     metadata:
       labels:
         app: azuredevops
     spec:
+      serviceAccountName: internal-kubectl
       terminationGracePeriodSeconds: 5
       containers:
       - name: azuredevops
         image: imjoseangel/vstsagent
         imagePullPolicy: IfNotPresent
         env:
-          - name: ADV_TOKEN
+          - name: AZP_TOKEN
             valueFrom:
               secretKeyRef:
                 name: azuredevops
-                key: ADV_TOKEN
+                key: AZP_TOKEN
           - name: AZP_URL
             valueFrom:
               configMapKeyRef:
                 name: azuredevops
-                key: ADV_ORG
+                key: AZP_URL
           - name: AZP_AGENT_NAME
             valueFrom:
               fieldRef:
                 fieldPath: metadata.name
-          - name: ADV_POOL
+          - name: AZP_POOL
             valueFrom:
               configMapKeyRef:
                 name: azuredevops
-                key: ADV_POOL
+                key: AZP_POOL
         resources:
           requests:
             memory: "1Gi"
             cpu: "1"
+
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  namespace: azuredevops
+  name: internal-kubectl
+
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  namespace: azuredevops
+  name: modify-pods
+rules:
+  - apiGroups: [""]
+    resources:
+      - pods
+    verbs:
+      - get
+      - list
+      - delete
+
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  namespace: azuredevops
+  name: modify-pods-to-sa
+subjects:
+  - kind: ServiceAccount
+    name: internal-kubectl
+roleRef:
+  kind: Role
+  name: modify-pods
+  apiGroup: rbac.authorization.k8s.io
