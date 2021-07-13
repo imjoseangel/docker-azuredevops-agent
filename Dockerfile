@@ -59,4 +59,11 @@ WORKDIR /azp
 ADD start.sh /start.sh
 RUN chmod +x /start.sh
 
+RUN groupadd -g 1001 azp && \
+    useradd -r -u 1001 -g azp azp
+
+RUN chown -R azp:azp /azp
+
+USER azp
+
 ENTRYPOINT ["/start.sh"]
