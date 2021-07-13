@@ -3,6 +3,7 @@ apiVersion: keda.sh/v1alpha1
 kind: TriggerAuthentication
 metadata:
   name: pipeline-trigger-auth
+  namespace: azuredevops
 spec:
   secretTargetRef:
     - parameter: personalAccessToken
@@ -13,6 +14,7 @@ apiVersion: keda.sh/v1alpha1
 kind: ScaledObject
 metadata:
   name: azure-pipelines-scaledobject
+  namespace: azuredevops
 spec:
   scaleTargetRef:
     name: azuredevops
