@@ -22,19 +22,20 @@ if [ -n "$AZP_WORK" ]; then
   mkdir -p "$AZP_WORK"
 fi
 
-rm -rf /azp/agent
-mkdir /azp/agent
-cd /azp/agent
-
 export AGENT_ALLOW_RUNASROOT="1"
 
 cleanup() {
   if [ -e config.sh ]; then
     print_header "Cleanup. Removing Azure Pipelines agent..."
 
-    ./config.sh remove --unattended \
-      --auth PAT \
-      --token $(cat "$AZP_TOKEN_FILE")
+    # If the agent has some running jobs, the configuration removal process will fail.
+    # So, give it some time to finish the job.
+    while true; do
+      ./config.sh remove --unattended --auth PAT --token $(cat "$AZP_TOKEN_FILE") && break
+
+      echo "Retrying in 30 seconds..."
+      sleep 30
+    done
   fi
 }
 
@@ -71,10 +72,7 @@ curl -LsS "$AZP_AGENTPACKAGE_URL" | tar -xz & wait $!
 # shellcheck source=/dev/null
 source ./env.sh
 
-trap 'cleanup; exit 130' INT
-trap 'cleanup; exit 143' TERM
-
-print_header "3. Configuring Azure Pipelines agent..."
+print_header "1. Configuring Azure Pipelines agent..."
 
 ./config.sh --unattended \
   --agent "${AZP_AGENT_NAME:-$(hostname)}" \
@@ -86,8 +84,12 @@ print_header "3. Configuring Azure Pipelines agent..."
   --replace \
   --acceptTeeEula & wait $!
 
-print_header "4. Running Azure Pipelines agent..."
+print_header "2. Running Azure Pipelines agent..."
 
-# `exec` the node runtime so it's aware of TERM and INT signals
-# AgentService.js understands how to handle agent self-update and restart
-exec ./externals/node/bin/node ./bin/AgentService.js interactive
+trap 'cleanup; exit 0' EXIT
+trap 'cleanup; exit 130' INT
+trap 'cleanup; exit 143' TERM
+
+# To be aware of TERM and INT signals call run.sh
+# Running it with the --once flag at the end will shut down the agent after the build is executed
+./run.sh "$@"

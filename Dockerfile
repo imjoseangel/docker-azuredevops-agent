@@ -4,7 +4,7 @@ LABEL maintainer="@imjoseangel"
 
 # To make it easier for build and release pipelines to run apt-get,
 # configure apt to not require confirmation (assume the -y argument by default)
-ENV DEBIAN_FRONTEND noninteractive
+ENV DEBIAN_FRONTEND=noninteractive
 RUN echo "APT::Get::Assume-Yes \"true\";" > /etc/apt/apt.conf.d/90assumeyes
 
 RUN apt-get update \
@@ -52,7 +52,8 @@ RUN pip3 install --upgrade \
 
 RUN ln -s /usr/bin/python3 /usr/bin/python
 
-RUN curl -sL https://aka.ms/InstallAzureCLIDeb | bash
+RUN curl -LsS https://aka.ms/InstallAzureCLIDeb | bash \
+    && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /azp
 
