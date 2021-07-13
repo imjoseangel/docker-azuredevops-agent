@@ -1,0 +1,49 @@
+apiVersion: keda.sh/v1alpha1
+kind: ScaledJob
+metadata:
+  name: azdevops-scaledjob
+spec:
+  jobTargetRef:
+    template:
+      spec:
+        serviceAccountName: internal-kubectl
+        containers:
+        - name: azuredevops
+            image: imjoseangel/vstsagent
+            imagePullPolicy: IfNotPresent
+            env:
+            - name: AZP_TOKEN
+                valueFrom:
+                secretKeyRef:
+                    name: azuredevops
+                    key: AZP_TOKEN
+            - name: AZP_URL
+                valueFrom:
+                configMapKeyRef:
+                    name: azuredevops
+                    key: AZP_URL
+            - name: AZP_AGENT_NAME
+                valueFrom:
+                fieldRef:
+                    fieldPath: metadata.name
+            - name: AZP_POOL
+                valueFrom:
+                configMapKeyRef:
+                    name: azuredevops
+                    key: AZP_POOL
+            resources:
+            requests:
+                memory: "1Gi"
+                cpu: "1"
+  pollingInterval: 30
+  successfulJobsHistoryLimit: 1
+  failedJobsHistoryLimit: 1
+  maxReplicaCount: 10
+  scalingStrategy:
+    strategy: "default"
+  triggers:
+  - type: azure-pipelines
+    metadata:
+      poolID: "327"
+      organizationURLFromEnv: "AZP_URL"
+      personalAccessTokenFromEnv: "AZP_TOKEN"
