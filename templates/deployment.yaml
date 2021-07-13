@@ -26,19 +26,18 @@ metadata:
   name: azuredevops
   namespace: azuredevops
 data:
-  AZP_URL: https://mycompany.visualstudio.com
-  AZP_POOL: "Docker Linux Agent"
+  AZP_URL: https://dev.azure.com/company
+  AZP_POOL: "Container Linux Agent"
 
 ---
 apiVersion: apps/v1
-kind: StatefulSet
+kind: Deployment
 metadata:
   name: azuredevops
   namespace: azuredevops
   labels:
     app: azuredevops
 spec:
-  serviceName: azuredevops
   replicas: 3
   selector:
     matchLabels:
