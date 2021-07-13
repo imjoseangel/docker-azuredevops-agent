@@ -1,6 +1,6 @@
 # Azure DevOps Agent on Docker
 
-A Docker Azure VSTS (DevOps) image.
+A Docker Azure DevOps image.
 
 ## Running
 
