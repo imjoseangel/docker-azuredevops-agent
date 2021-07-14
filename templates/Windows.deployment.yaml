@@ -27,7 +27,7 @@ metadata:
   namespace: winazuredevops
 data:
   AZP_URL: https://dev.azure.com/company
-  AZP_POOL: "Container Linux Agent"
+  AZP_POOL: "Container Windows Agent"
 
 ---
 apiVersion: apps/v1
