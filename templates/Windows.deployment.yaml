@@ -1,0 +1,114 @@
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  labels:
+    kubernetes.io/metadata.name: winazuredevops
+  name: winazuredevops
+spec:
+  finalizers:
+  - kubernetes
+
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: winazuredevops
+  namespace: winazuredevops
+type: Opaque
+data:
+  AZP_TOKEN: base64==
+
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: winazuredevops
+  namespace: winazuredevops
+data:
+  AZP_URL: https://dev.azure.com/company
+  AZP_POOL: "Container Linux Agent"
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: winazuredevops
+  namespace: winazuredevops
+  labels:
+    app: winazuredevops
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: winazuredevops
+  template:
+    metadata:
+      labels:
+        app: winazuredevops
+    spec:
+      serviceAccountName: internal-kubectl
+      terminationGracePeriodSeconds: 5
+      containers:
+      - name: winazuredevops
+        image: vismaraet.azurecr.io/dockeragent:latest
+        imagePullPolicy: IfNotPresent
+        env:
+          - name: AZP_TOKEN
+            valueFrom:
+              secretKeyRef:
+                name: winazuredevops
+                key: AZP_TOKEN
+          - name: AZP_URL
+            valueFrom:
+              configMapKeyRef:
+                name: winazuredevops
+                key: AZP_URL
+          - name: AZP_AGENT_NAME
+            valueFrom:
+              fieldRef:
+                fieldPath: metadata.name
+          - name: AZP_POOL
+            valueFrom:
+              configMapKeyRef:
+                name: winazuredevops
+                key: AZP_POOL
+        resources: {}
+
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  namespace: winazuredevops
+  name: internal-kubectl
+
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  namespace: winazuredevops
+  name: modify-pods
+rules:
+  - apiGroups: [""]
+    resources:
+      - pods
+    verbs:
+      - get
+      - list
+      - delete
+      - create
+      - update
+
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  namespace: winazuredevops
+  name: modify-pods-to-sa
+subjects:
+  - kind: ServiceAccount
+    name: internal-kubectl
+roleRef:
+  kind: Role
+  name: modify-pods
+  apiGroup: rbac.authorization.k8s.io
