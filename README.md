@@ -10,8 +10,13 @@ Run Azure DevOps Agent:
 docker run -d -P --name vstsagent -e AZP_URL=https://<your_company>.visualstudio.com -e AZP_TOKEN=<your_token> -e AZP_AGENT_NAME=dockeragent -e AZP_POOL="Docker Linux Agent" --name agentvsts imjoseangel/vstsagent
 ```
 
-Allocating a pseudo-TTY is not strictly necessary, but it gives us pretty color-coded logs that we can look at with `docker logs`:
-   `-t`
+Allocating a pseudo-TTY is not strictly necessary, but it gives us pretty color-coded logs that we can look at with `docker logs`: `-t`
+
+## Build on ACR
+
+``` bash
+az acr build --registry myacr.azurecr.io --platform windows --image dockeragent:latest --file Windows.Dockerfile .
+```
 
 ## Maintainers
 
