@@ -51,7 +51,7 @@ spec:
       terminationGracePeriodSeconds: 5
       containers:
       - name: winazuredevops
-        image: vismaraet.azurecr.io/dockeragent:latest
+        image: company.azurecr.io/dockeragent:latest
         imagePullPolicy: IfNotPresent
         env:
           - name: AZP_TOKEN
