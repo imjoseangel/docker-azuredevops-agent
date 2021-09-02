@@ -60,7 +60,7 @@ try {
 finally {
   Write-Host "Cleanup. Removing Azure Pipelines agent..." -ForegroundColor Cyan
 
-  .\agent\config.cmd remove --unattended `
+  .\config.cmd remove --unattended `
     --auth PAT `
-    --token "${Env:AZP_TOKEN}"
+    --token "$(Get-Content ${Env:AZP_TOKEN_FILE})"
 }
