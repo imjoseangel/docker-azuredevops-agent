@@ -31,7 +31,7 @@ cleanup() {
     # If the agent has some running jobs, the configuration removal process will fail.
     # So, give it some time to finish the job.
     while true; do
-      ./config.sh remove --unattended --auth PAT --token $(cat "$AZP_TOKEN_FILE") && break
+      ./config.sh remove --unattended --auth PAT --token "$AZP_TOKEN" && break
 
       echo "Retrying in 30 seconds..."
       sleep 30
