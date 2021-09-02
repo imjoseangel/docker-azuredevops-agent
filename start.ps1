@@ -29,7 +29,7 @@ Set-Location agent
 Write-Host "1. Determining matching Azure Pipelines agent..." -ForegroundColor Cyan
 
 $base64AuthInfo = [Convert]::ToBase64String([Text.Encoding]::ASCII.GetBytes(":$(Get-Content ${Env:AZP_TOKEN_FILE})"))
-$package = Invoke-RestMethod -Headers @{Authorization=("Basic $base64AuthInfo")} "$(${Env:AZP_URL})/_apis/distributedtask/packages/agent?platform=win-x64&`$top=1"
+$package = Invoke-RestMethod -Headers @{Authorization = ("Basic $base64AuthInfo") } "$(${Env:AZP_URL})/_apis/distributedtask/packages/agent?platform=win-x64&`$top=1"
 $packageUrl = $package[0].Value.downloadUrl
 
 Write-Host $packageUrl
@@ -41,8 +41,7 @@ $wc.DownloadFile($packageUrl, "$(Get-Location)\agent.zip")
 
 Expand-Archive -Path "agent.zip" -DestinationPath "\azp\agent"
 
-try
-{
+try {
   Write-Host "3. Configuring Azure Pipelines agent..." -ForegroundColor Cyan
 
   .\config.cmd --unattended `
@@ -58,11 +57,10 @@ try
 
   .\run.cmd
 }
-finally
-{
+finally {
   Write-Host "Cleanup. Removing Azure Pipelines agent..." -ForegroundColor Cyan
 
-  .\config.cmd remove --unattended `
+  .\agent\config.cmd remove --unattended `
     --auth PAT `
-    --token "$(Get-Content ${Env:AZP_TOKEN_FILE})"
+    --token "${Env:AZP_TOKEN}"
 }
