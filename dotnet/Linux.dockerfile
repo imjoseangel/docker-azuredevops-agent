@@ -104,6 +104,6 @@ RUN groupadd -g 1001 azp && \
 
 RUN chown -R azp:azp /azp
 
-#USER azp #System.UnauthorizedAccessException: Access to the path '/home/azp/.dotnet' is denied.
+USER azp
 
 ENTRYPOINT ["/start.sh"]
