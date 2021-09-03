@@ -28,8 +28,25 @@ Set-Location agent
 
 Write-Host "1. Determining matching Azure Pipelines agent..." -ForegroundColor Cyan
 
+$domains = @(([System.Uri]$(${Env:AZP_URL})).Host)
+
+ForEach ($domain in $domains) {
+  Do {
+    $resolveDomain = (Resolve-DnsName -Name $domain -Type A -ErrorAction 0 | Where-Object { $_.Strings -ne '' } | Measure-Object).Count
+
+    If ($resolveDomain -eq 0) {
+      Write-Host "DNS resolution failed..."
+      Start-Sleep -Seconds 10
+    }
+    Else {
+      Write-Host "DNS resolution succeeded..."
+    }
+  }
+  Until ($resolveDomain -gt 0)
+}
+
 $base64AuthInfo = [Convert]::ToBase64String([Text.Encoding]::ASCII.GetBytes(":$(Get-Content ${Env:AZP_TOKEN_FILE})"))
-$package = Invoke-RestMethod -Headers @{Authorization=("Basic $base64AuthInfo")} "$(${Env:AZP_URL})/_apis/distributedtask/packages/agent?platform=win-x64&`$top=1"
+$package = Invoke-RestMethod -Headers @{Authorization = ("Basic $base64AuthInfo") } "$(${Env:AZP_URL})/_apis/distributedtask/packages/agent?platform=win-x64&`$top=1"
 $packageUrl = $package[0].Value.downloadUrl
 
 Write-Host $packageUrl
@@ -41,8 +58,7 @@ $wc.DownloadFile($packageUrl, "$(Get-Location)\agent.zip")
 
 Expand-Archive -Path "agent.zip" -DestinationPath "\azp\agent"
 
-try
-{
+try {
   Write-Host "3. Configuring Azure Pipelines agent..." -ForegroundColor Cyan
 
   .\config.cmd --unattended `
@@ -58,8 +74,7 @@ try
 
   .\run.cmd
 }
-finally
-{
+finally {
   Write-Host "Cleanup. Removing Azure Pipelines agent..." -ForegroundColor Cyan
 
   .\config.cmd remove --unattended `
