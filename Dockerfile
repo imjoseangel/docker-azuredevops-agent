@@ -7,6 +7,10 @@ LABEL maintainer="@imjoseangel"
 ENV DEBIAN_FRONTEND=noninteractive
 RUN echo "APT::Get::Assume-Yes \"true\";" > /etc/apt/apt.conf.d/90assumeyes
 
+# **********************************************
+# Set common components
+# **********************************************
+
 RUN apt-get update \
     && apt-get install -y --no-install-recommends \
     apt-utils \
@@ -29,12 +33,14 @@ RUN apt-get update \
     libssl1.1 \
     libunwind8 \
     curl \
+    wget \
     gnupg2 \
     netcat \
     python3 \
     python3-dev \
     python3-pip && \
     rm -rf /var/lib/apt/lists/*
+
 
 RUN curl http://ftp.debian.org/debian/pool/main/i/icu/libicu63_63.2-3_amd64.deb \
     --output libicu63_63.2-3_amd64.deb && dpkg -i libicu63_63.2-3_amd64.deb
@@ -55,10 +61,33 @@ RUN ln -s /usr/bin/python3 /usr/bin/python
 RUN curl -LsS https://aka.ms/InstallAzureCLIDeb | bash \
     && rm -rf /var/lib/apt/lists/*
 
+
+# **********************************************
+# Install dotnet components
+# **********************************************
+#Setup PPA
+RUN wget https://packages.microsoft.com/config/ubuntu/18.04/packages-microsoft-prod.deb  -O packages-microsoft-prod.deb | bash \
+    && dpkg -i packages-microsoft-prod.deb \
+    && rm packages-microsoft-prod.deb
+
+# **********************************************
+# Install NodeJS & Powershell
+# **********************************************
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends \
+    npm nodejs powershell
+
+# **********************************************
+# Install AzureDevops Agents
+# **********************************************
+
 WORKDIR /azp
 
 ADD start.sh /start.sh
 RUN chmod +x /start.sh
+
+ADD stop.sh /stop.sh
+RUN chmod +x /stop.sh
 
 RUN groupadd -g 1001 azp && \
     useradd -r -u 1001 -g azp azp
