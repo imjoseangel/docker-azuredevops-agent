@@ -37,6 +37,7 @@ RUN apt-get update \
     gnupg2 \
     netcat \
     openssh-client \
+    unzip \
     python3 \
     python3-dev \
     python3-pip && \
