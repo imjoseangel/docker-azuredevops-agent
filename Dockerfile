@@ -36,6 +36,7 @@ RUN apt-get update \
     wget \
     gnupg2 \
     netcat \
+    openssh-client \
     python3 \
     python3-dev \
     python3-pip && \
@@ -90,7 +91,7 @@ ADD stop.sh /stop.sh
 RUN chmod +x /stop.sh
 
 RUN groupadd -g 1001 azp && \
-    useradd -r -u 1001 -g azp azp
+    useradd -r -u 1001 -g azp -d /azp azp
 
 RUN chown -R azp:azp /azp
 
