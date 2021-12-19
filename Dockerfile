@@ -16,12 +16,17 @@ RUN apt-get update \
     apt-utils \
     apt-transport-https \
     software-properties-common \
+    make \
     build-essential \
     libssl-dev \
     libffi-dev \
+    liblzma-dev \
     libxml2-dev \
     libxslt1-dev \
     zlib1g-dev \
+    libbz2-dev \
+    libreadline-dev \
+    libsqlite3-dev \
     ca-certificates \
     jq \
     git \
@@ -32,11 +37,17 @@ RUN apt-get update \
     libcurl4 \
     libssl1.1 \
     libunwind8 \
+    libncurses5-dev \
+    libncursesw5-dev \
+    python-openssl \
     curl \
     wget \
+    llvm \
     gnupg2 \
     netcat \
     openssh-client \
+    xz-utils \
+    tk-dev \
     unzip \
     python3 \
     python3-dev \
@@ -84,6 +95,16 @@ RUN apt-get update \
 # **********************************************
 
 WORKDIR /azp
+
+ENV PYENV_ROOT /azp/.pyenv
+ENV PATH $PYENV_ROOT/shims:$PYENV_ROOT/bin:$PATH
+
+RUN set -ex \
+    && curl https://pyenv.run | bash \
+    && pyenv update \
+    && pythonVersions='3.6.15 3.7.12 3.8.12 3.9.9 3.10.1' \
+    && echo $pythonVersions | xargs -n 1 pyenv install \
+    && pyenv rehash
 
 ADD start.sh /start.sh
 RUN chmod +x /start.sh
