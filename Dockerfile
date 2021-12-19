@@ -1,4 +1,4 @@
-FROM ubuntu:focal
+FROM ubuntu:focal AS main
 
 LABEL maintainer="@imjoseangel"
 
@@ -49,46 +49,39 @@ RUN apt-get update \
     xz-utils \
     tk-dev \
     unzip \
-    python3 \
-    python3-dev \
-    python3-pip && \
-    rm -rf /var/lib/apt/lists/*
-
+    && rm -rf /var/lib/apt/lists/*
 
 RUN curl http://ftp.debian.org/debian/pool/main/i/icu/libicu63_63.2-3_amd64.deb \
     --output libicu63_63.2-3_amd64.deb && dpkg -i libicu63_63.2-3_amd64.deb
 
-RUN curl -s https://packages.cloud.google.com/apt/doc/apt-key.gpg | apt-key add - && \
-    apt-add-repository "deb https://apt.kubernetes.io/ kubernetes-xenial main"
+FROM main AS agent
 
-RUN apt-get update \
-    && apt-get install -y --no-install-recommends \
-    kubeadm kubelet kubectl kubernetes-cni
-
-RUN pip3 install --upgrade \
-    setuptools \
-    pip
-
-RUN ln -s /usr/bin/python3 /usr/bin/python
+# **********************************************
+# Install azcli components
+# **********************************************
 
 RUN curl -LsS https://aka.ms/InstallAzureCLIDeb | bash \
     && rm -rf /var/lib/apt/lists/*
 
-
 # **********************************************
-# Install dotnet components
+# Install dotnet components and kubernetes repo
 # **********************************************
 #Setup PPA
 RUN wget https://packages.microsoft.com/config/ubuntu/18.04/packages-microsoft-prod.deb  -O packages-microsoft-prod.deb | bash \
     && dpkg -i packages-microsoft-prod.deb \
     && rm packages-microsoft-prod.deb
 
+RUN curl -s https://packages.cloud.google.com/apt/doc/apt-key.gpg | apt-key add - && \
+    apt-add-repository "deb https://apt.kubernetes.io/ kubernetes-xenial main"
+
 # **********************************************
-# Install NodeJS & Powershell
+# Install NodeJS, Powershell and Kubectl
 # **********************************************
+
 RUN apt-get update \
     && apt-get install -y --no-install-recommends \
-    npm nodejs powershell
+    npm nodejs powershell kubectl\
+    && rm -rf /var/lib/apt/lists/*
 
 # **********************************************
 # Install AzureDevops Agents
