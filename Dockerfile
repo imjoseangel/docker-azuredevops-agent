@@ -99,6 +99,9 @@ RUN set -ex \
     && echo $pythonVersions | xargs -n 1 pyenv install \
     && pyenv rehash
 
+RUN set -ex \
+    && pyenv global 3.6.15 3.7.12 3.8.12 3.9.9 3.10.1
+
 ADD start.sh /start.sh
 RUN chmod +x /start.sh
 
