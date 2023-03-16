@@ -48,11 +48,17 @@ spec:
         app: winazuredevops
     spec:
       serviceAccountName: internal-kubectl
-      terminationGracePeriodSeconds: 5
+      terminationGracePeriodSeconds: 120
+      nodeSelector:
+        kubernetes.io/os: windows
       containers:
       - name: winazuredevops
         image: company.azurecr.io/dockeragent:latest
         imagePullPolicy: IfNotPresent
+        lifecycle:
+          preStop:
+            exec:
+              command: ["powershell",". c:/azp/stop.ps1"]
         env:
           - name: AZP_TOKEN
             valueFrom:
@@ -74,7 +80,11 @@ spec:
                 name: winazuredevops
                 key: AZP_POOL
         resources: {}
-
+      tolerations:
+      - key: "os"
+        operator: "Equal"
+        value: "windows"
+        effect: "NoSchedule"
 ---
 apiVersion: v1
 kind: ServiceAccount
